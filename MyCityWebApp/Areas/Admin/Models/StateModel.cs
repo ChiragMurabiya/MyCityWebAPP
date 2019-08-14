@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -8,6 +9,9 @@ namespace MyCityWebApp.Areas.Admin.Models
     public class StateModel
     {
         public int ID { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "State Name", Prompt = "State Name")]
         public string Name { get; set; }
         public Nullable<bool> Active { get; set; }
         public Nullable<System.DateTime> Created { get; set; }

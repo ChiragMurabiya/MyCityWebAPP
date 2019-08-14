@@ -17,12 +17,12 @@
 <link href="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 @*<!-- Bootstrap core JavaScript-->
-<script src="~/Areas/Style/vendor/jquery/jquery.min.js"></script>
-<script src="~/Areas/Style/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Core plugin JavaScript-->
-<script src="~/Areas/Style/vendor/jquery-easing/jquery.easing.min.js"></script>
-<!-- Custom scripts for all pages-->
-<script src="~/Areas/Style/js/sb-admin-2.min.js"></script>*@
+    <script src="~/Areas/Style/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Areas/Style/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="~/Areas/Style/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="~/Areas/Style/js/sb-admin-2.min.js"></script>*@
 
 <!-- Page level plugins -->
 <script src="~/Areas/Style/vendor/datatables/jquery.dataTables.min.js"></script>
@@ -34,7 +34,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">State</h1>
-        <a href="@Url.Action("Create", "State")" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add</a>
+        <a href="@Url.Action("Create", "State", new { id = 0 })" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add</a>
     </div>
 </div>
 
@@ -50,52 +50,63 @@
                         @Html.DisplayNameFor(model => model.Name)
                     </th>
                     @*<th>
-                            @Html.DisplayNameFor(model => model.Active)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Created)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.CreatedBy)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Updated)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.UpdatedBy)
-                        </th>*@
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Updated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </th>*@
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
 
-                @foreach (var item in Model)
+                @if (Model != null)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        @*<td>
-                                @Html.DisplayFor(modelItem => item.Active)
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            @*<td>
+                        @Html.DisplayFor(modelItem => item.Active)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedBy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Updated)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UpdatedBy)
+                    </td>*@
+                            <td>
+                                @Html.ActionLink("Edit", "Create", new { id = item.ID })
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Created)
+                                @*@Html.ActionLink("Delete", "Delete", new { id = item.ID })*@
+                                <a href='javascript:;' onclick="DeleteState(@item.ID)" title="Delete State" id="btnDelete">Delete</a>
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CreatedBy)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Updated)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.UpdatedBy)
-                            </td>*@
-                        <td>
-                            @Html.ActionLink("Edit", "Create", new { id = item.ID })
-                        </td>
-                        <td>
-                            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-                        </td>
-                    </tr>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-danger alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        @ViewBag.Message
+                    </div>
                 }
             </table>
         </div>
@@ -109,3 +120,27 @@
     <!-- Page level custom scripts -->
     @Scripts.Render("~/Areas/Style/js/demo/datatables-demo.js")*@
 
+<script type="text/javascript">
+    function DeleteState(StateID) {
+        var result = confirm('Are you sure you want to delete?')
+        if (result == true) {
+            $.ajax({
+                url: '/State/DeleteState?StateID=' + StateID,
+                success: function (data) {
+                    if (data == 0) {
+                        document.location = 'State/Index';
+                    }
+                    if (data == 1) {
+                        alert('This State available in City so, not deleted.');
+                        return false;
+                    }
+                    if (data == 2) {
+                        alert('This State available in Shop so, not deleted.');
+                        return false;
+                    }
+                },
+                async: false
+            });
+        }
+    }
+</script>

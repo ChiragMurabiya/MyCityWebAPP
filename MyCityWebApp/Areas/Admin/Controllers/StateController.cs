@@ -1,15 +1,13 @@
-﻿using System;
+﻿using MyCityWebApp.Areas.Admin.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using MyCityWebApp.Areas.Admin.Models;
-using MyCityWebApp.Areas.Admin.Controllers;
 using System.Configuration;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using System.Web.Mvc;
 
 namespace MyCityWebApp.Areas.Admin.Controllers
 {
@@ -36,21 +34,20 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    readTask = result.Content.ReadAsStringAsync().Result;
-                    //readTask.Wait();
-
-                    //state = readTask;
-
-                    //Deserializing the response recieved from web api and storing into the Employee list  
+                    readTask = result.Content.ReadAsStringAsync().Result;  
                     stateInfo = JsonConvert.DeserializeObject<List<StateModel>>(readTask);
+
+                    if (stateInfo.Count == 0)
+                    {
+                        ViewBag.Message = "No data found";
+                        return View(state);
+                    }
                 }
                 else //web api sent error response 
                 {
-                    //log response status here..
-
-                    state = Enumerable.Empty<StateModel>();
-
-                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                    state = Enumerable.Empty<StateModel>();                    
+                    ViewBag.Message = "No data found";
+                    return View(state);
                 }
             }
             return View(stateInfo);
@@ -59,24 +56,30 @@ namespace MyCityWebApp.Areas.Admin.Controllers
         public ActionResult Create(int ID)
         {
             StateModel model = new StateModel();
-
-            var response = client.GetAsync(string.Format("{0}/api/States/{1}", WebAPIUrl, ID)).Result;
-            if (response.IsSuccessStatusCode)
+            if (ID != 0)
             {
-                var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-                string code = responseString.SelectToken("code").ToString();
-                if (code == "0")
+                var response = client.GetAsync(string.Format("{0}/api/States/{1}", WebAPIUrl, ID)).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    model.ID = (int)responseString["data"]["ID"];
-                    model.Name = (string)responseString["data"]["Name"];
-                    model.Active = Convert.ToBoolean(responseString["data"]["Active"]);
-                }
-                else
-                {
+                    var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                    string code = responseString.SelectToken("code").ToString();
+                    if (code == "0")
+                    {
+                        model.ID = (int)responseString["data"]["ID"];
+                        model.Name = (string)responseString["data"]["Name"];
+                        model.Active = Convert.ToBoolean(responseString["data"]["Active"]);
+                    }
+                    else
+                    {
 
+                    }
                 }
+                return View(model);
             }
-            return View(model);
+            else
+            {
+                return View(model);
+            }
         }
 
         [HttpPost]
@@ -91,10 +94,15 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                     if (model.ID > 0)
                     {
                         model.Active = model.Active;
+                        model.Created = System.DateTime.Now;
+                        model.CreatedBy = 1;
+                        model.Updated = System.DateTime.Now;
+                        model.UpdatedBy = 1;
 
                         string data = Newtonsoft.Json.JsonConvert.SerializeObject(model);
                         var content = new StringContent(data, Encoding.UTF8, "application/json");
-                        var response = client.PutAsync("http://localhost:49254/api/States", content).Result;
+                        //var response = client.PutAsync("/api/States", content).Result;
+                        var response = client.PutAsync(string.Format("{0}/api/States", WebAPIUrl), content).Result;
                         if (response.IsSuccessStatusCode)
                         {
                             var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
@@ -105,7 +113,7 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                             }
                             else
                             {
-                                ViewBag.Message = "This email is already being used by another login.  If you want to use that login, please press cancel below and login with that email.   You may request a password change if you don't remember the password. OK";
+                                ViewBag.Message = "State not found";
                                 return View(model);
                             }
                         }
@@ -125,14 +133,15 @@ namespace MyCityWebApp.Areas.Admin.Controllers
 
                         string data = Newtonsoft.Json.JsonConvert.SerializeObject(model);
                         var content = new StringContent(data, Encoding.UTF8, "application/json");
-                        var response = client.PostAsync("/api/States", content).Result;
+                        //var response = client.PostAsync("api/States", content).Result;
+                        var response = client.PostAsync(string.Format("{0}/api/States", WebAPIUrl), content).Result;
                         if (response.IsSuccessStatusCode)
                         {
                             var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
                             string code = responseString.SelectToken("code").ToString();
                             if (code == "0")
                             {
-                                return View("Index");
+                                return RedirectToAction("Index", "State");
                             }
                             else
                             {
@@ -146,13 +155,38 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                             return View(model);
                         }
                     }
+                    return RedirectToAction("Index", "State");
                 }
-                return RedirectToAction("Index", "State");
+                return View(model);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        public int DeleteState(int StateID)
+        {
+            response = client.DeleteAsync(string.Format("{0}/api/States/{1}", WebAPIUrl, StateID)).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                string code = result.SelectToken("code").ToString();
+                if (code == "0")
+                {
+                    return 0;
+                }
+                else if (code == "1")
+                {
+                    return 1;
+                }
+                else if (code == "2")
+                {
+                    return 2;
+                }
+
+            }
+            return -1;
         }
     }
 }
