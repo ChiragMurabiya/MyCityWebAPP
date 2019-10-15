@@ -1,0 +1,96 @@
+﻿@model IEnumerable<MyCityWebApp.Areas.Admin.Models.CityModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Custom styles for this page -->
+<link href="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Page level plugins -->
+<script src="~/Areas/Style/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Page level custom scripts -->
+<script src="~/Areas/Style/js/demo/datatables-demo.js"></script>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">City</h1>
+        <a href="@Url.Action("Create", "City", new { id = 0 })" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add</a>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary"></h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Create", new { id = item.ID })
+                            </td>
+                            <td>
+                                @*@Html.ActionLink("Delete", "Delete", new { id = item.ID })*@
+                                <a href='javascript:;' onclick="DeleteCity(@item.ID)" title="Delete City" id="btnDelete">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-danger alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        @ViewBag.Message
+                    </div>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+@*<!-- Page level plugins -->
+    @Scripts.Render("~/Areas/Style/vendor/datatables/jquery.dataTables.min.js")
+    @Scripts.Render("~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.js")
+
+    <!-- Page level custom scripts -->
+    @Scripts.Render("~/Areas/Style/js/demo/datatables-demo.js")*@
+
+<script type="text/javascript">
+    function DeleteCity(CityID) {
+        var result = confirm('Are you sure you want to delete?')
+        if (result == true) {
+            $.ajax({
+                url: '/City/DeleteCity?CityID=' + CityID,
+                success: function (data) {
+                    if (data == 0) {
+                        document.location = 'City/Index';
+                    }
+                    if (data == 1) {
+                        alert('This City available in Shiop so, not deleted.');
+                        return false;
+                    }
+                },
+                async: false
+            });
+        }
+    }
+</script>

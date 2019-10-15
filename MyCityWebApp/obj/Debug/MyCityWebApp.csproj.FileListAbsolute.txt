@@ -74,3 +74,9 @@ G:\MyCity\MyCityWebApp\MyCityWebApp\obj\Debug\MyCityWebApp.csproj.CoreCompileInp
 G:\MyCity\MyCityWebApp\MyCityWebApp\obj\Debug\MyCityWebApp.csproj.CopyComplete
 G:\MyCity\MyCityWebApp\MyCityWebApp\obj\Debug\MyCityWebApp.dll
 G:\MyCity\MyCityWebApp\MyCityWebApp\obj\Debug\MyCityWebApp.pdb
+G:\MyCity\MyCityWebAPP\MyCityWebApp\bin\System.Net.Http.Formatting.dll
+G:\MyCity\MyCityWebAPP\MyCityWebApp\bin\System.Web.Http.dll
+G:\MyCity\MyCityWebAPP\MyCityWebApp\bin\System.Web.Http.WebHost.dll
+G:\MyCity\MyCityWebAPP\MyCityWebApp\bin\System.Net.Http.Formatting.xml
+G:\MyCity\MyCityWebAPP\MyCityWebApp\bin\System.Web.Http.xml
+G:\MyCity\MyCityWebAPP\MyCityWebApp\bin\System.Web.Http.WebHost.xml

@@ -1,0 +1,66 @@
+﻿@model MyCityWebApp.Areas.Admin.Models.CityModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create</h1>
+        <a href="@Url.Action("Index", "City")" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+
+    @using (Html.BeginForm("Create", "City", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "user" }))
+    {
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Active)
+
+        if (ViewBag.Message != null)
+        {
+            <div class="col-md-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    @ViewBag.Message
+                </div>
+            </div>
+        }
+
+            <div class="form-group">
+                @Html.DropDownList("stateNameList", Model.stateList, "Select State", new { @class = "form-control" })
+                @Html.HiddenFor(m => m.stateID)
+                @*@Html.DropDownList("stateList", Model.stateList, "Select State")*@
+                @*@Html.DropDownListFor(m => m.stateList, new SelectList(Model.stateList, "ID", "Name", Model.stateList))*@
+                @*@Html.DropDownListFor(m => m.ID, (SelectList)ViewBag.stateNameList, "Seleccionar", new { @class = "form-control" })*@
+            </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-user", placeholder = "City Name" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary btn-user btn-block" />
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#stateNameList").change(function () {
+            $("#stateID").val('option:selected', this).val();
+        });
+    });
+</script>
