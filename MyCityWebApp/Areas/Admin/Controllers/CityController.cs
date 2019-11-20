@@ -79,11 +79,8 @@ namespace MyCityWebApp.Areas.Admin.Controllers
 
         public ActionResult Create(int ID)
         {
-            //ViewBag.stateNameList = getStates();
-
+            //ViewBag.stateNameList = getStates();            
             CityModel model = new CityModel();
-
-
             model.stateList = new SelectList(getStates(), "Value", "Text");
 
             if (ID != 0)
@@ -97,6 +94,9 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                     {
                         model.ID = (int)responseString["data"]["ID"];
                         model.Name = (string)responseString["data"]["Name"];
+                        
+                        model.stateID = (int)responseString["data"]["StateID"];
+
                         model.Active = Convert.ToBoolean(responseString["data"]["Active"]);
                     }
                     else
@@ -107,7 +107,7 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                 return View(model);
             }
             else
-            {
+            {                
                 return View(model);
             }
         }
@@ -128,6 +128,7 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                         model.CreatedBy = 1;
                         model.Updated = System.DateTime.Now;
                         model.UpdatedBy = 1;
+                        model.stateID = model.stateID;
 
                         string data = Newtonsoft.Json.JsonConvert.SerializeObject(model);
                         var content = new StringContent(data, Encoding.UTF8, "application/json");

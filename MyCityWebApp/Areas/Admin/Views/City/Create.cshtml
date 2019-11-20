@@ -34,10 +34,10 @@
         }
 
             <div class="form-group">
-                @Html.DropDownList("stateNameList", Model.stateList, "Select State", new { @class = "form-control" })
-                @Html.HiddenFor(m => m.stateID)
+                @*@Html.DropDownList("stateNameList", Model.stateList, "Select State", new { @class = "form-control" })
+        @Html.HiddenFor(m => m.stateID)*@
                 @*@Html.DropDownList("stateList", Model.stateList, "Select State")*@
-                @*@Html.DropDownListFor(m => m.stateList, new SelectList(Model.stateList, "ID", "Name", Model.stateList))*@
+                @Html.DropDownListFor(m => m.stateID, new SelectList(Model.stateList, "Value", "Text"), "Select", new { @class = "form-control" })
                 @*@Html.DropDownListFor(m => m.ID, (SelectList)ViewBag.stateNameList, "Seleccionar", new { @class = "form-control" })*@
             </div>
 
