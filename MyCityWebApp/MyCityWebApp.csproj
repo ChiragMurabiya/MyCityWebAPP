@@ -134,7 +134,10 @@
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\CityController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ShopController.cs" />
     <Compile Include="Areas\Admin\Controllers\StateController.cs" />
+    <Compile Include="Areas\Admin\Models\ShopAndImageModel.cs" />
+    <Compile Include="Areas\Admin\Models\ShopModel.cs" />
     <Compile Include="Areas\Admin\Models\CityModel.cs" />
     <Compile Include="Areas\Admin\Models\CategoryModel.cs" />
     <Compile Include="Areas\Admin\Models\StateModel.cs" />
@@ -145,6 +148,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Images\Desert.jpg" />
+    <Content Include="Areas\Images\Koala.jpg" />
     <Content Include="Areas\Style\css\sb-admin-2.css" />
     <Content Include="Areas\Style\css\sb-admin-2.min.css" />
     <Content Include="Areas\Style\img\undraw_posting_photo.svg" />
@@ -1934,6 +1939,8 @@
     <Content Include="Areas\Admin\Views\City\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Shop\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shop\Create.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
