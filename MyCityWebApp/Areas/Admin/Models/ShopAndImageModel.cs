@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Web.Mvc;
 
@@ -24,6 +25,10 @@ namespace MyCityWebApp.Areas.Admin.Models
         public Nullable<int> CreatedBy { get; set; }
         public Nullable<System.DateTime> Updated { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
+
+        [ReadOnly(true)]
+        [DisplayName("Add Product")]
+        public string AddProduct { get; set; }
 
         [NotMapped]
         public SelectList stateList { get; set; }
