@@ -30,6 +30,22 @@ namespace MyCityWebApp.Areas.Admin.Models
         [DisplayName("Add Product")]
         public string AddProduct { get; set; }
 
+        [ReadOnly(true)]
+        [DisplayName("Select State")]
+        public string SelectState { get; set; }
+
+        [ReadOnly(true)]
+        [DisplayName("Select City")]
+        public string SelectCity { get; set; }
+
+        [ReadOnly(true)]
+        [DisplayName("Select Category")]
+        public string SelectCategory { get; set; }
+
+        [ReadOnly(true)]
+        [DisplayName("Upload Photo")]
+        public string UploadPhoto { get; set; }
+
         [NotMapped]
         public SelectList stateList { get; set; }
         [NotMapped]

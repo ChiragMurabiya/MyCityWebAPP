@@ -131,12 +131,15 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\BannerController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\CityController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\ShopController.cs" />
     <Compile Include="Areas\Admin\Controllers\ShopProductController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ShopProductImageController.cs" />
     <Compile Include="Areas\Admin\Controllers\StateController.cs" />
+    <Compile Include="Areas\Admin\Models\BannerModel.cs" />
     <Compile Include="Areas\Admin\Models\ShopAndImageModel.cs" />
     <Compile Include="Areas\Admin\Models\ShopModel.cs" />
     <Compile Include="Areas\Admin\Models\CityModel.cs" />
@@ -1945,6 +1948,10 @@
     <Content Include="Areas\Admin\Views\Shop\Create.cshtml" />
     <Content Include="Areas\Admin\Views\ShopProduct\Create.cshtml" />
     <Content Include="Areas\Admin\Views\ShopProduct\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ShopProductImage\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ShopProductImage\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Banner\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Banner\Create.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -1975,6 +1982,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\BannerImages\" />
+    <Folder Include="Areas\ProductImages\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

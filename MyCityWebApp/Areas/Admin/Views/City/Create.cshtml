@@ -33,28 +33,36 @@
             </div>
         }
 
-            <div class="form-group">
+        <div class="form-group">
+            @Html.LabelFor(model => model.SelectState, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
                 @*@Html.DropDownList("stateNameList", Model.stateList, "Select State", new { @class = "form-control" })
-        @Html.HiddenFor(m => m.stateID)*@
+                    @Html.HiddenFor(m => m.stateID)*@
                 @*@Html.DropDownList("stateList", Model.stateList, "Select State")*@
                 @Html.DropDownListFor(m => m.stateID, new SelectList(Model.stateList, "Value", "Text"), "Select", new { @class = "form-control" })
                 @*@Html.DropDownListFor(m => m.ID, (SelectList)ViewBag.stateNameList, "Seleccionar", new { @class = "form-control" })*@
             </div>
+        </div>
 
         <div class="form-group">
-            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-user", placeholder = "City Name" } })
-            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-user" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
         </div>
 
 
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary btn-user btn-block" />
-        </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input type="submit" value="Create" class="btn btn-primary btn-user btn-block" />
+                </div>
+            </div>
     }
 
-    <div>
+    @*<div>
         @Html.ActionLink("Back to List", "Index")
-    </div>
+    </div>*@
 </div>
 
 <script type="text/javascript">

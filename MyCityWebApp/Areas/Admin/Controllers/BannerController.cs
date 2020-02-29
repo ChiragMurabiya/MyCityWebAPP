@@ -12,56 +12,54 @@ using System.Web.Mvc;
 
 namespace MyCityWebApp.Areas.Admin.Controllers
 {
-    public class ShopProductController : Controller
+    public class BannerController : Controller
     {
         string WebAPIUrl = ConfigurationManager.AppSettings["MyCityWebAPIUrl"];
         HttpClient client = new HttpClient();
         HttpResponseMessage response = new HttpResponseMessage();
 
-        // GET: Admin/ShopProduct
-        public ActionResult Index(int ShopID)
+        // GET: Admin/Banner
+        public ActionResult Index()
         {
-            IEnumerable<ShopProductAndProductImageModel> ShopProduct = null;
-            List<ShopProductAndProductImageModel> ShopProductInfo = new List<ShopProductAndProductImageModel>();
+            IEnumerable<BannerModel> Banner = null;
+            List<BannerModel> BannerInfo = new List<BannerModel>();
             var readTask = "";
-
-            ViewBag.ShopID = ShopID;
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(WebAPIUrl);
                 //HTTP GET
-                var responseTask = client.GetAsync("/api/GetShopProduct?ShopId=" + ShopID);
+                var responseTask = client.GetAsync("/api/Banners");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
                     readTask = result.Content.ReadAsStringAsync().Result;
-                    ShopProductInfo = JsonConvert.DeserializeObject<List<ShopProductAndProductImageModel>>(readTask);
+                    BannerInfo = JsonConvert.DeserializeObject<List<BannerModel>>(readTask);
 
-                    if (ShopProductInfo.Count == 0)
+                    if (BannerInfo.Count == 0)
                     {
                         ViewBag.Message = "No data found";
-                        return View(ShopProduct);
+                        return View(Banner);
                     }
                 }
                 else //web api sent error response 
                 {
-                    ShopProduct = Enumerable.Empty<ShopProductAndProductImageModel>();
+                    Banner = Enumerable.Empty<BannerModel>();
                     ViewBag.Message = "No data found";
-                    return View(ShopProduct);
+                    return View(Banner);
                 }
             }
-            return View(ShopProductInfo);
+            return View(BannerInfo);
         }
 
-        public ActionResult Create(int ID, int ShopID)
+        public ActionResult Create(int ID)
         {
-            ShopProductAndProductImageModel model = new ShopProductAndProductImageModel();
+            BannerModel model = new BannerModel();
             if (ID != 0)
             {
-                var response = client.GetAsync(string.Format("{0}/api/ShopProducts/{1}", WebAPIUrl, ID)).Result;
+                var response = client.GetAsync(string.Format("{0}/api/Banners/{1}", WebAPIUrl, ID)).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
@@ -69,11 +67,7 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                     if (code == "0")
                     {
                         model.ID = (int)responseString["data"]["ID"];
-                        model.Name = (string)responseString["data"]["Name"];
-                        model.Description = (string)responseString["data"]["Description"];
-                        model.Discount = (decimal)responseString["data"]["Discount"];
-                        model.Price = (decimal)responseString["data"]["Price"];
-                        model.ShopID = (int)responseString["data"]["ShopID"];
+                        model.ImageName = (string)responseString["data"]["Name"];
                         model.Active = Convert.ToBoolean(responseString["data"]["Active"]);
                     }
                     else
@@ -84,7 +78,7 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                 return View(model);
             }
             else
-            { 
+            {
                 return View(model);
             }
         }
@@ -92,7 +86,7 @@ namespace MyCityWebApp.Areas.Admin.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ShopProductAndProductImageModel model)
+        public ActionResult Create(BannerModel model, HttpPostedFileBase postedFile)
         {
             try
             {
@@ -108,18 +102,18 @@ namespace MyCityWebApp.Areas.Admin.Controllers
 
                         string data = Newtonsoft.Json.JsonConvert.SerializeObject(model);
                         var content = new StringContent(data, Encoding.UTF8, "application/json");
-                        var response = client.PutAsync(string.Format("{0}/api/ShopProducts", WebAPIUrl), content).Result;
+                        var response = client.PutAsync(string.Format("{0}/api/Categories", WebAPIUrl), content).Result;
                         if (response.IsSuccessStatusCode)
                         {
                             var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
                             string code = responseString.SelectToken("code").ToString();
                             if (code == "0")
                             {
-                                return RedirectToAction("Index", "ShopProduct", new { ShopID = model.ShopID });
+                                return RedirectToAction("Index", "Category");
                             }
                             else
                             {
-                                ViewBag.Message = "Product not found";
+                                ViewBag.Message = "Category not found";
                                 return View(model);
                             }
                         }
@@ -131,30 +125,51 @@ namespace MyCityWebApp.Areas.Admin.Controllers
                     }
                     else
                     {
-                        model.Active = true;
-                        model.Created = System.DateTime.Now;
-                        model.CreatedBy = 1;
-                        model.Updated = System.DateTime.Now;
-                        model.UpdatedBy = 1;
-
-                        string data = Newtonsoft.Json.JsonConvert.SerializeObject(model);
-                        var content = new StringContent(data, Encoding.UTF8, "application/json");
-                        var response = client.PostAsync(string.Format("{0}/api/ShopProducts", WebAPIUrl), content).Result;
-                        if (response.IsSuccessStatusCode)
+                        if (postedFile != null)
                         {
-                            var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-                            string code = responseString.SelectToken("code").ToString();
-                            if (code == "0")
+                            //Extract Image File Name.
+                            string ImageName = System.IO.Path.GetFileName(postedFile.FileName);
+
+                            //Set the Image File Path.
+                            string ImagePath = "~/Areas/Images/" + ImageName;
+
+                            //Save the Image File in Folder.
+                            postedFile.SaveAs(Server.MapPath(ImagePath));
+
+                            model.ImageName = ImageName;
+                            model.ImagePath = ImagePath;
+                            model.Active = true;
+                            model.Created = System.DateTime.Now;
+                            model.CreatedBy = 1;
+                            model.Updated = System.DateTime.Now;
+                            model.UpdatedBy = 1;
+
+                            string data = Newtonsoft.Json.JsonConvert.SerializeObject(model);
+                            var content = new StringContent(data, Encoding.UTF8, "application/json");
+                            var response = client.PostAsync(string.Format("{0}/api/Banners", WebAPIUrl), content).Result;
+                            if (response.IsSuccessStatusCode)
                             {
-                                return RedirectToAction("Index", "ShopProduct", new { ShopID = model.ShopID });
+                                var responseString = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                                string code = responseString.SelectToken("code").ToString();
+                                if (code == "0")
+                                {
+                                    return RedirectToAction("Index", "Banner");
+                                }
+                            }
+                            else
+                            {
+                                ViewBag.Message = "Insert failed. " + response.ToString();
+                                return View(model);
                             }
                         }
                         else
                         {
-                            ViewBag.Message = "Insert failed. " + response.ToString();
+                            ViewBag.Message = "Please choose file to upload.";
                             return View(model);
                         }
                     }
+                    //Image Upload Code End
+                    return RedirectToAction("Index", "Banner");
                 }
                 return View(model);
             }
@@ -164,20 +179,22 @@ namespace MyCityWebApp.Areas.Admin.Controllers
             }
         }
 
-        public int DeleteShopProduct(int ShopProductID)
+        public int DeleteBanner(int BannerID)
         {
-            response = client.DeleteAsync(string.Format("{0}/api/ShopProducts/{1}", WebAPIUrl, ShopProductID)).Result;
+            response = client.DeleteAsync(string.Format("{0}/api/Banners/{1}", WebAPIUrl, BannerID)).Result;
             if (response.IsSuccessStatusCode)
             {
                 var result = JObject.Parse(response.Content.ReadAsStringAsync().Result);
                 string code = result.SelectToken("code").ToString();
                 if (code == "0")
                 {
+                    string fullPath = Request.MapPath("~/Areas/Images/" + model.ImageName);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+
                     return 0;
-                }
-                else if (code == "1")
-                {
-                    return 1;
                 }
             }
             return -1;

@@ -1,0 +1,88 @@
+﻿@model MyCityWebApp.Areas.Admin.Models.ShopProductAndProductImageModel
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Upload Product Images</h1>
+        <a href="@Url.Action("Index", "Shop")" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+
+    @using (Html.BeginForm("Create", "ShopProductImage", FormMethod.Post, new { enctype = "multipart/form-data", @class = "user", onsubmit = "return AjaxPost(this)" }))
+    {
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Active)
+        @Html.HiddenFor(m => m.ShopID)
+        @Html.HiddenFor(m => m.ShopProductID)
+
+        if (ViewBag.Message != null)
+        {
+            <div class="col-md-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    @ViewBag.Message
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UploadImage, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" name="postedFiles" multiple="multiple" />
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Upload" class="btn btn-primary btn-user btn-block" />
+                @*<input type="button" value="Upload" class="btn btn-primary btn-user btn-block" />*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @if (Model.ImageList != null)
+                {
+                    foreach (var image in Model.ImageList)
+                    {
+                        <img src="~/Areas/ProductImages/@Html.DisplayFor(modelItem => image.Name)" height="100px" width="100px" alt=Model.ImageName />
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@*<script type="text/javascript">
+    function AjaxPost(formData)
+    {
+        alert(formData);
+        var ajaxConfig = {
+            type: "post",
+            url: "/ShopProductImage/SaveData",
+            data: new FormData(formData),
+            success: function (result) {
+                alert(result);
+                
+            }
+        }
+        //if ($(formData).attr('enctype') == "multipart/form-data")
+        //{
+        //    ajaxConfig["contentType"] = false;
+        //    ajaxConfig["processData"] = false;
+        //}
+
+        $.ajax(ajaxConfig);
+        return false;
+    }
+
+</script>*@

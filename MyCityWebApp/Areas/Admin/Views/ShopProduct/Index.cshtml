@@ -5,8 +5,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-
 <!-- Custom styles for this page -->
 <link href="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
@@ -19,7 +17,7 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Shop</h1>
+        <h1 class="h3 mb-0 text-gray-800">Shop Products</h1>
         <a href="@Url.Action("Create", "ShopProduct", new { ID = 0, ShopID = ViewBag.ShopID })" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add</a>
     </div>
 </div>
@@ -40,8 +38,14 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Discount)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
                     <th>Edit</th>
                     <th>Delete</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AddProductImages)
+                    </th>
                 </tr>
                 @if (Model != null)
                 {
@@ -58,11 +62,17 @@
                                 @Html.DisplayFor(modelItem => item.Discount)
                             </td>
                             <td>
-                                @Html.ActionLink("Edit", "Create", new { id = item.ID })
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Create", new { ID = item.ID, ShopID = ViewBag.ShopID })
                             </td>
                             <td>
                                 @*@Html.ActionLink("Delete", "Delete", new { id = item.ID })*@
-                                <a href='javascript:;' onclick="DeleteShop(@item.ID)" title="Delete Shop" id="btnDelete">Delete</a>
+                                <a href='javascript:;' onclick="DeleteShopProduct(@item.ID, @ViewBag.ShopID)" title="Delete Shop" id="btnDelete">Delete</a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Add Product Images", "Create", "ShopProductImage", new { ShopProductID = item.ID }, null)
                             </td>
                         </tr>
                     }
@@ -80,14 +90,18 @@
     </div>
 </div>
 <script type="text/javascript">
-    function DeleteShop(ShopID) {
+    function DeleteShopProduct(ShopProductID, ShopID) {
         var result = confirm('Are you sure you want to delete?')
         if (result == true) {
             $.ajax({
-                url: '/Shop/DeleteShop?ShopID=' + ShopID,
+                url: '/ShopProduct/DeleteShopProduct?ShopProductID=' + ShopProductID,
                 success: function (data) {
                     if (data == 0) {
-                        document.location = 'Sshop/Index';
+                        document.location = 'ShopProduct/Index?ShopID=' + ShopID;
+                    }
+                    if (data == 1) {
+                        alert('Shop Product Not Found!!');
+                        return false;
                     }
                 },
                 async: false

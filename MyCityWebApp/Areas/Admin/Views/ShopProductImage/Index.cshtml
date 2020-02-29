@@ -1,0 +1,23 @@
+﻿@model IEnumerable<MyCityWebApp.Areas.Admin.Models.ShopProductAndProductImageModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Custom styles for this page -->
+<link href="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Page level plugins -->
+<script src="~/Areas/Style/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Page level custom scripts -->
+<script src="~/Areas/Style/js/demo/datatables-demo.js"></script>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Products Images</h1>
+        <a href="@Url.Action("Create", "ShopProductImage", new { ID = 0, ShopProductID = ViewBag.ShopProductID })" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add</a>
+    </div>
+</div>

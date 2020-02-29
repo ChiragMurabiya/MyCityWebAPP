@@ -1,0 +1,126 @@
+﻿@model IEnumerable<MyCityWebApp.Areas.Admin.Models.BannerModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Custom styles for this page -->
+<link href="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<!-- Page level plugins -->
+<script src="~/Areas/Style/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Areas/Style/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Page level custom scripts -->
+<script src="~/Areas/Style/js/demo/datatables-demo.js"></script>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Banner</h1>
+        <a href="@Url.Action("Create", "Banner", new { id = 0 })" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"> Add</a>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary"></h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Image)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ImageName)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.ImagePath)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Active)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Created)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CreatedBy)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Updated)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UpdatedBy)
+                        </th>*@
+                    @*<th>Edit</th>*@
+                    <th>Delete</th>
+                </tr>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@Url.Content(item.ImagePath)" height="60px" width="60px" alt=@item.ImageName />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ImageName)
+                            </td>
+                            @*<td>
+                                    @Html.DisplayFor(modelItem => item.ImagePath)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Active)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Created)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreatedBy)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Updated)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UpdatedBy)
+                                </td>*@
+                            @*<td>
+                                @Html.ActionLink("Edit", "Create", new { id = item.ID })
+                            </td>*@
+                            <td>                                
+                                <a href='javascript:;' onclick="DeleteBanner(@item.ID)" title="Delete Banner" id="btnDelete">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-danger alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        @ViewBag.Message
+                    </div>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function DeleteCategory(BannerID) {
+        var result = confirm('Are you sure you want to delete?')
+        if (result == true) {
+            $.ajax({
+                url: '/Banner/DeleteBanner?BannerID=' + BannerID,
+                success: function (data) {
+                    if (data == 0) {
+                        document.location = 'Banner/Index';
+                    }
+                },
+                async: false
+            });
+        }
+    }
+</script>
